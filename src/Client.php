@@ -53,7 +53,7 @@ Class Client
     private function getClient()
     {
         $client = new \GuzzleHttp\Client([
-            'base_uri' => 'http://vault:8200',
+            'base_uri' => getenv('VAULT_ADDR'),
             'timeout'  => 2.0,
             'headers' => [
                 'X-Vault-Token' => getenv('VAULT_TOKEN'),
