@@ -11,5 +11,8 @@
             "name": "Brad Cimbura",
             "email": "hpz937@gmail.com"
         }
-    ]
+    ],
+    "autoload": {
+        "psr-4": { "Hpz937\\Vault\\": "src" }
+    }
 }
