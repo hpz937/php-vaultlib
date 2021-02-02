@@ -1,0 +1,15 @@
+{
+    "name": "hpz937/php-vaultlib",
+    "description": "PHP library for Vault API",
+    "type": "library",
+    "require": {
+        "guzzlehttp/guzzle": "^7.0"
+    },
+    "license": "GNU GPLv3",
+    "authors": [
+        {
+            "name": "Brad Cimbura",
+            "email": "hpz937@gmail.com"
+        }
+    ]
+}
