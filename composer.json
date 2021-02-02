@@ -13,6 +13,9 @@
         }
     ],
     "autoload": {
-        "psr-4": { "Hpz937\\Vault\\": "src" }
+        "psr-4": { 
+	    "Hpz937\\Vault\\": "src"
+	}
+
     }
 }
