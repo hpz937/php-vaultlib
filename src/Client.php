@@ -8,9 +8,9 @@ Class Client
 {
     private $client;
 
-    public function __construct()
+    public function __construct($vaultAddr,$vaultToken)
     {
-        $this->client = $this->getClient();
+        $this->client = $this->getClient($vaultAddr,$vaultToken);
         $this->isTokenValid();
         $this->getStatus();
     }
@@ -50,13 +50,13 @@ Class Client
         }
     }
 
-    private function getClient()
+    private function getClient($vaultAddr,$vaultToken)
     {
         $client = new \GuzzleHttp\Client([
-            'base_uri' => getenv('VAULT_ADDR'),
+            'base_uri' => $vaultAddr,
             'timeout'  => 2.0,
             'headers' => [
-                'X-Vault-Token' => getenv('VAULT_TOKEN'),
+                'X-Vault-Token' => $vaultToken,
                 'Accept' => 'application/json',
             ]
         ]);
