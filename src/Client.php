@@ -8,9 +8,9 @@ Class Client
 {
     private $client;
 
-    public function __construct($vaultAddr,$vaultToken)
+    public function __construct($vaultAddr,$vaultToken,$vaultTimeout = 2.0)
     {
-        $this->client = $this->getClient($vaultAddr,$vaultToken);
+        $this->client = $this->getClient($vaultAddr, $vaultToken, $vaultTimeout);
         $this->isTokenValid();
         $this->getStatus();
     }
@@ -46,15 +46,15 @@ Class Client
                 die('Key Not Found ' . $key . PHP_EOL);
             }
         } catch (\GuzzleHttp\Exception\ConnectException $e) {
-            die("Vault Server Not Found" . PHP_EOL);
+            die("Vault Server Not Found" . $e->getMessage() . PHP_EOL);
         }
     }
 
-    private function getClient($vaultAddr,$vaultToken)
+    private function getClient($vaultAddr, $vaultToken, $vaultTimeout)
     {
         $client = new \GuzzleHttp\Client([
             'base_uri' => $vaultAddr,
-            'timeout'  => 2.0,
+            'timeout'  => $vaultTimeout,
             'headers' => [
                 'X-Vault-Token' => $vaultToken,
                 'Accept' => 'application/json',
