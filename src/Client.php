@@ -8,7 +8,7 @@ Class Client
 {
     private $client;
 
-    public function __construct($vaultAddr,$vaultToken,$vaultTimeout = 2.0)
+    public function __construct($vaultAddr,$vaultToken,$vaultTimeout = 10.0)
     {
         $this->client = $this->getClient($vaultAddr, $vaultToken, $vaultTimeout);
         $this->isTokenValid();
