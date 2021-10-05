@@ -6,11 +6,29 @@ use Exception;
 
 Class Client
 {
-    private $client;
+    protected $client;
+    protected $token;
+    const VAULT_AUTH_TOKEN = 0;
+    const VAULT_AUTH_USER = 1;
 
-    public function __construct($vaultAddr,$vaultToken,$vaultTimeout = 10.0)
+    public function __construct($vaultAddr,$vaultAuth,$vaultTimeout = 10.0,$authMethod = self::VAULT_AUTH_TOKEN)
     {
-        $this->client = $this->getClient($vaultAddr, $vaultToken, $vaultTimeout);
+        $this->client = $this->getClient($vaultAddr, $vaultTimeout);
+        if($authMethod == self::VAULT_AUTH_TOKEN)
+        {
+            $this->token = $vaultAuth;
+        }
+        elseif($authMethod == self::VAULT_AUTH_USER)
+        {
+            $response = $this->client->post(
+                '/v1/auth/userpass/login/'.$vaultAuth[0],
+                [
+                    'body' => json_encode(array('password' => $vaultAuth[1]))
+                ]
+            );
+            $body = json_decode($response->getBody());
+            $this->token = $body->auth->client_token;
+        }
         $this->isTokenValid();
         $this->getStatus();
     }
@@ -40,23 +58,22 @@ Class Client
     private function getRequest($method,$path)
     {
         try {
-            return json_decode($this->client->request($method,$path)->getBody());
+            return json_decode($this->client->request($method,$path,['headers' => ['X-Vault-Token' => $this->token]])->getBody());
         } catch (\GuzzleHttp\Exception\ClientException $e) {
             if($e->getCode() == 404) {
-                die('Key Not Found ' . $key . PHP_EOL);
+                die('Key Not Found ' /* . $key */ . PHP_EOL);
             }
         } catch (\GuzzleHttp\Exception\ConnectException $e) {
             die("Vault Server Not Found" . $e->getMessage() . PHP_EOL);
         }
     }
 
-    private function getClient($vaultAddr, $vaultToken, $vaultTimeout)
+    private function getClient($vaultAddr, $vaultTimeout)
     {
         $client = new \GuzzleHttp\Client([
             'base_uri' => $vaultAddr,
             'timeout'  => $vaultTimeout,
             'headers' => [
-                'X-Vault-Token' => $vaultToken,
                 'Accept' => 'application/json',
             ]
         ]);
